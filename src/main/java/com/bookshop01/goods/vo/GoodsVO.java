@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.util.ArrayList;
 
 public class GoodsVO {
+    private String row_num;
 	private int goods_id;
 	private String goods_title;
 	private String goods_writer;
@@ -26,14 +27,16 @@ public class GoodsVO {
 	private String goods_recommendation;
 	private Date   goods_credate;
 	
-	public GoodsVO() {
-	}
 
-	
+	public String getRow_num() {
+        return row_num;
+    }
 
+    public void setRow_num(String row_num) {
+        this.row_num = row_num;
+    }
 
-
-	public int getGoods_id() {
+    public int getGoods_id() {
 		return goods_id;
 	}
 

@@ -1,104 +1,156 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-	pageEncoding="utf-8"	isELIgnored="false"
-	%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
-<%
-  request.setCharacterEncoding("UTF-8");
-%>  
-
-<div id="ad_main_banner">
-	<ul class="bjqs">	 	
-	  <li><img width="775" height="145" src="${contextPath}/resources/image/main_banner01.jpg"></li>
-		<li><img width="775" height="145" src="${contextPath}/resources/image/main_banner02.jpg"></li>
-		<li><img width="775" height="145" src="${contextPath}/resources/image/main_banner03.jpg"></li> 
-	</ul>
-</div>
-<div class="main_book">
-   <c:set  var="goods_count" value="0" />
-	<h3>베스트셀러</h3>
-	<c:forEach var="item" items="${goodsMap.bestseller }">
-	   <c:set  var="goods_count" value="${goods_count+1 }" />
-		<div class="book">
-			<a href="${contextPath}/goods/goodsDetail.do?goods_id=${item.goods_id }">
-			<img class="link"  src="${contextPath}/resources/image/1px.gif"> 
-			</a> 
-				<img width="121" height="154" 
-				     src="${contextPath}/thumbnails.do?goods_id=${item.goods_id}&fileName=${item.goods_fileName}">
-
-			<div class="title">${item.goods_title }</div>
-			<div class="price">
-		  	   <fmt:formatNumber  value="${item.goods_price}" type="number" var="goods_price" />
-		          ${goods_price}원
-			</div>
-		</div>
-	   <c:if test="${goods_count==15   }">
-         <div class="book">
-           <font size=20> <a href="#">more</a></font>
-         </div>
-     </c:if>
-  </c:forEach>
-</div>
-<div class="clear"></div>
-<div id="ad_sub_banner">
-	<img width="770" height="117" src="${contextPath}/resources/image/sub_banner01.jpg">
-</div>
-<div class="main_book" >
-<c:set  var="goods_count" value="0" />
-	<h3>새로 출판된 책</h3>
-	<c:forEach var="item" items="${goodsMap.newbook }" >
-	   <c:set  var="goods_count" value="${goods_count+1 }" />
-		<div class="book">
-		  <a href="${contextPath}/goods/goodsDetail.do?goods_id=${item.goods_id }">
-	       <img class="link"  src="${contextPath}/resources/image/1px.gif"> 
-	      </a>
-		 <img width="121" height="154" 
-				src="${contextPath}/thumbnails.do?goods_id=${item.goods_id}&fileName=${item.goods_fileName}">
-		<div class="title">${item.goods_title }</div>
-		<div class="price">
-		    <fmt:formatNumber  value="${item.goods_price}" type="number" var="goods_price" />
-		       ${goods_price}원
-		  </div>
-	</div>
-	 <c:if test="${goods_count==15   }">
-     <div class="book">
-       <font size=20> <a href="#">more</a></font>
-     </div>
-   </c:if>
-	</c:forEach>
-</div>
-
-<div class="clear"></div>
-<div id="ad_sub_banner">
-	<img width="770" height="117" src="${contextPath}/resources/image/sub_banner02.jpg">
-</div>
-
-
-<div class="main_book" >
-<c:set  var="goods_count" value="0" />
-	<h3>스테디셀러</h3>
-	<c:forEach var="item" items="${goodsMap.steadyseller }" >
-	   <c:set  var="goods_count" value="${goods_count+1 }" />
-		<div class="book">
-		  <a href="${contextPath}/goods/goodsDetail.do?goods_id=${item.goods_id }">
-	       <img class="link"  src="${contextPath}/resources/image/1px.gif"> 
-	      </a>
-		 <img width="121" height="154" 
-				src="${contextPath}/thumbnails.do?goods_id=${item.goods_id}&fileName=${item.goods_fileName}">
-		<div class="title">${item.goods_title }</div>
-		<div class="price">
-		    <fmt:formatNumber  value="${item.goods_price}" type="number" var="goods_price" />
-		       ${goods_price}원
-		  </div>
-	</div>
-	 <c:if test="${goods_count==15   }">
-     <div class="book">
-       <font size=20> <a href="#">more</a></font>
-     </div>
-   </c:if>
-	</c:forEach>
-</div>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/views/common/taglib_import.jsp" %>
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <jsp:include page="${includeCommonPath}/head.jsp">
+            <jsp:param name="title" value="타이틀 명칭" />
+        </jsp:include>
+    </head>
+    <body>
+        <div id="outer_wrap">
+            <div id="wrap">
+                <header>
+                    <jsp:include page="${includeCommonPath}/header.jsp" />
+                </header>
+                <div class="clear"></div>
+                <aside>
+                    <jsp:include page="${includeCommonPath}/side.jsp" />
+                </aside>
+                <article>
+                    <!-- 화면 내용 시작(body start) -->
+                    <hgroup>
+                        <h1>${param.goods_sort}</h1>
+                        <h2>오늘의 ${not empty param.goods_sort_type?param.goods_sort_type:'책'}</h2>
+                    </hgroup>
+                    <section id="new_book">
+                        <h3>새로나온 책</h3>
+                        <div id="left_scroll">
+                            <a href='javascript:slide("left");'><img src="${contextPath}/resources/image/left.gif"></a>
+                        </div>
+                        <div id="carousel_inner">
+                            <ul id="carousel_ul">
+                            <c:choose>
+                               <c:when test="${ empty goodsList  }" >
+                                    <li>
+                                        <div id="book">
+                                            <h1><a>제품이없습니다.</a></h1>
+                                        </div>
+                                    </li> 
+                               </c:when>
+                               <c:otherwise>
+                                <c:forEach var="item" items="${goodsList }" >
+                                 <li>
+                                    <div id="book">
+                                        <a href="${contextPath}/goods/goodsDetail.do?goods_id=${item.goods_id}">
+                                        <img width="75" alt="" src="${contextPath}/thumbnails.do?goods_id=${item.goods_id}&fileName=${item.goods_fileName}">
+                                        </a>
+                                        <div class="sort">[컴퓨터 인터넷]</div>
+                                        <div class="title">
+                                            <a href="${contextPath}/goods/goodsDetail.do?goods_id=${item.goods_id }">
+                                              ${item.goods_title}
+                                            </a>
+                                        </div>
+                                        <div class="writer">${item.goods_writer} | ${item.goods_publisher}</div>
+                                        <div class="price">
+                                            <span>
+                                              <fmt:formatNumber  value="${item.goods_price}" type="number" var="goods_price" />
+                                                 ${goods_price}원
+                                            </span> <br>
+                                             <fmt:formatNumber  value="${item.goods_price*0.9}" type="number" var="discounted_price" />
+                                               ${discounted_price}원(10%할인)
+                                        </div>
+                                    </div>
+                                </li>
+                                </c:forEach> 
+                                <li>
+                                </li> 
+                               </c:otherwise>
+                             </c:choose>
+                             
+                            </ul>
+                        </div>
+                        <div id="right_scroll">
+                            <a href='javascript:slide("right");'><img  src="${contextPath}/resources/image/right.gif"></a>
+                        </div>
+                        <input id="hidden_auto_slide_seconds" type="hidden" value="0">
+                
+                        <div class="clear"></div>
+                    </section>
+                    <div class="clear"></div>
+                    <div id="sorting">
+                        <ul>
+                            <li><a class="active" href="#">베스트 셀러</a></li>
+                            <li><a href="#">최신 출간</a></li>
+                            <li><a style="border: currentColor; border-image: none;" href="#">최근 등록</a></li>
+                        </ul>
+                    </div>
+                    <table id="list_view">
+                        <tbody>
+                          <c:forEach var="item" items="${goodsList }"> 
+                            <tr>
+                                    <td class="goods_image">
+                                        <a href="${contextPath}/goods/goodsDetail.do?goods_id=${item.goods_id}">
+                                               <img width="75" alt="" src="${contextPath}/thumbnails.do?goods_id=${item.goods_id}&fileName=${item.goods_fileName}">
+                                        </a>
+                                    </td>
+                                    <td class="goods_description">
+                                        <h2>
+                                            <a href="${contextPath}/goods/goodsDetail.do?goods_id=${item.goods_id }">${item.goods_title }</a>
+                                        </h2>
+                                        <c:set var="goods_pub_date" value="${item.goods_published_date }" />
+                                       <c:set var="arr" value="${fn:split(goods_pub_date,' ')}" />
+                                        <div class="writer_press"  >${item.goods_writer }저
+                                            |${item.goods_publisher }|<c:out value="${arr[0]}" />
+                                        </div>
+                                    </td>
+                                    <td class="price"><span>${item.goods_price }원</span><br>
+                                        <strong>
+                                         <fmt:formatNumber  value="${item.goods_price*0.9}" type="number" var="discounted_price" />
+                                               ${discounted_price}원
+                                        </strong><br>(10% 할인)
+                                    </td>
+                                    <td><input type="checkbox" value=""></td>
+                                    <td class="buy_btns">
+                                        <ul>
+                                            <li><a href="#">장바구니</a></li>
+                                            <li><a href="#">구매하기</a></li>
+                                            <li><a href="#">비교하기</a></li>
+                                        </ul>
+                                    </td>
+                            </tr>
+                            </c:forEach>
+                        </tbody>
+                    </table>
+                    <div class="clear"></div>
+                    <div id="page_wrap">
+                        <ul id="page_control">
+                            <li><a class="no_border" href="#">Prev</a></li>
+                            <c:set var="page_num" value="0" />
+                            <c:forEach var="count" begin="1" end="10" step="1">
+                                <c:choose>
+                                    <c:when test="${count==1 }">
+                                        <li><a class="page_contrl_active" href="#">${count+page_num*10 }</a></li>
+                                    </c:when>
+                                    <c:otherwise>
+                                        <li><a href="#">${count+page_num*10 }</a></li>
+                                    </c:otherwise>
+                                </c:choose>
+                            </c:forEach>
+                            <li><a class="no_border" href="#">Next</a></li>
+                        </ul>
+                    </div>
+                    <!-- 화면 내용 끝(body end) -->
+                </article>
+                <div class="clear"></div>
+                <footer>
+                    <jsp:include page="${includeCommonPath}/footer.jsp" />
+                </footer>
+            </div>
+            <jsp:include page="${includeCommonPath}/quickMenu.jsp" />
+        </div>
+    </body>
+</html>
 
    
    

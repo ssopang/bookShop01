@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Repository;
 
+import com.bookshop01.goods.vo.GoodsSearchVO;
 import com.bookshop01.goods.vo.GoodsVO;
 import com.bookshop01.goods.vo.ImageFileVO;
 
@@ -45,5 +46,10 @@ public class GoodsDAOImpl  implements GoodsDAO{
 		List<ImageFileVO> imageList=(ArrayList)sqlSession.selectList("mapper.goods.selectGoodsDetailImage",goods_id);
 		return imageList;
 	}
+	
+	@Override
+    public List<GoodsVO> searchGoodsList(GoodsSearchVO goodsSearchVO) throws DataAccessException{
+        return sqlSession.selectList("mapper.goods.searchGoodsList",goodsSearchVO);
+    }
 	
 }

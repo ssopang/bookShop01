@@ -1,52 +1,67 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-    pageEncoding="UTF-8" isELIgnored="false"%>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<c:set var="contextPath"  value="${pageContext.request.contextPath}"/>
-<%
-	request.setCharacterEncoding("utf-8");
-%>    
-<script>
-	function SignOutCheck() {
-		const result = confirm("정말 회원탈퇴 하시겠습니까 ??");
-		
-		if(result) {
-			return true;
-		} else {
-			event.preventDefault();
-			event.stopPropagation();
-		}
-	}
-
-</script>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/views/common/taglib_import.jsp" %>
 <!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-</head>
-<body>
-	<H3>회원 탈퇴 창</H3>
-	<DIV id="detail_table">
-	<form action="${contextPath}/member/removeMember.do" method="post">
-		<TABLE>
-			<TBODY>
-				<TR class="dot_line">
-					<TD class="fixed_join">아이디</TD>
-					<TD><input name="member_id" type="text" size="20" autofocus/></TD>
-				</TR>
-				<TR class="solid_line">
-					<TD class="fixed_join">비밀번호</TD>
-					<TD><input name="member_pw" type="password" size="20" /></TD>
-				</TR>
-			</TBODY>
-		</TABLE>
-		<br><br>
-		<INPUT	type="submit" value="회원탈퇴" onClick="SignOutCheck()"> 
-		<INPUT type="button" value="다시쓰기">
-		
-		<Br><br>
-		   <a href="#">고객 센터</a>
-					   
-	</form>		
-</body>
+<html lang="ko">
+    <head>
+        <jsp:include page="${includeCommonPath}/head.jsp">
+            <jsp:param name="title" value="타이틀 명칭" />
+        </jsp:include>
+        <script type="text/javascript">
+            function SignOutCheck() {
+                const result = confirm("정말 회원탈퇴 하시겠습니까 ??");
+                
+                if(result) {
+                    return true;
+                } else {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+            }
+        
+        </script>
+    </head>
+    <body>
+        <div id="outer_wrap">
+            <div id="wrap">
+                <header>
+                    <jsp:include page="${includeCommonPath}/header.jsp" />
+                </header>
+                <div class="clear"></div>
+                <aside>
+                    <jsp:include page="${includeCommonPath}/side.jsp" />
+                </aside>
+                <article>
+                    <!-- 화면 내용 시작(body start) -->
+                    <h3>회원 탈퇴 창</h3>
+                    <div id="detail_table">
+                        <form action="${contextPath}/member/removeMember.do" method="post">
+                            <table>
+                                <tbody>
+                                    <tr class="dot_line">
+                                        <td class="fixed_join">아이디</td>
+                                        <td><input name="member_id" type="text" size="20" autofocus/></td>
+                                    </tr>
+                                    <tr class="solid_line">
+                                        <td class="fixed_join">비밀번호</td>
+                                        <td><input name="member_pw" type="password" size="20" /></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <br><br>
+                            <input    type="submit" value="회원탈퇴" onClick="SignOutCheck()"> 
+                            <input type="button" value="다시쓰기">
+                            <br><br>
+                           <a href="#">고객 센터</a>
+                        </form>    
+                    </div>
+                    <!-- 화면 내용 끝(body end) -->
+                </article>
+                <div class="clear"></div>
+                <footer>
+                    <jsp:include page="${includeCommonPath}/footer.jsp" />
+                </footer>
+            </div>
+            <jsp:include page="${includeCommonPath}/quickMenu.jsp" />
+        </div>
+    </body>
 </html>

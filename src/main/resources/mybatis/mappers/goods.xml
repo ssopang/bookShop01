@@ -6,6 +6,7 @@
 <mapper namespace="mapper.goods">
 <!-- 리절트 맵 정의 -->	
 	<resultMap id="goodsResult" type="goodsVO">
+		<result property="row_num" column="row_num" />
 		<result property="goods_id" column="goods_id" />
 		<result property="goods_title" column="goods_title" />
 		<result property="goods_writer" column="goods_writer" />
@@ -87,5 +88,34 @@
 		]]>
 	</select>
 	
+	
+	<select id="searchGoodsList" parameterType="com.bookshop01.goods.vo.GoodsSearchVO" resultMap="goodsResult">
+		select row_number() over(order by goods_credate desc) row_num
+		      ,goods_id
+		      ,goods_sort
+		      ,goods_title
+		      ,goods_writer
+		      ,goods_publisher
+		      ,goods_price
+		      ,goods_sales_price
+		      ,goods_point
+		      ,goods_published_date
+		      ,goods_total_page
+		      ,goods_isbn
+		      ,goods_delivery_price
+		      ,goods_recommendation
+		      ,goods_delivery_date
+		      ,goods_status
+		      ,goods_intro
+		      ,goods_writer_intro
+		      ,goods_publisher_comment
+		      ,goods_contents_order
+		      ,goods_credate
+		  from t_shopping_goods
+		 where goods_sort = #{goods_sort}
+		 <if test='searchWord != null and searchWord != ""'>
+		   and goods_title like '%' ||  #{searchWord} || '%'
+		 </if>
+	</select>
 
 </mapper>

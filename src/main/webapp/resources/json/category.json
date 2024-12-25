@@ -1,0 +1,26 @@
+[
+  {
+    "categoryId":"01"
+   ,"categoryName":"국내외 도서"
+   ,"subCategory":[
+      {"categoryId":"01" ,"categoryName":"IT/인터넷"}
+     ,{"categoryId":"02" ,"categoryName":"경제/경영"}
+     ,{"categoryId":"03" ,"categoryName":"대학교재"}
+     ,{"categoryId":"04" ,"categoryName":"자기계발"}
+     ,{"categoryId":"05" ,"categoryName":"자연과학/공학"}
+     ,{"categoryId":"06" ,"categoryName":"역사/인문학"}
+    ]
+  }
+ ,{
+    "categoryId":"02"
+   ,"categoryName":"음반"
+   ,"subCategory":[
+      {"categoryId":"01" ,"categoryName":"가요"}
+     ,{"categoryId":"02" ,"categoryName":"록"}
+     ,{"categoryId":"03" ,"categoryName":"클래식"}
+     ,{"categoryId":"04" ,"categoryName":"뉴에이지"}
+     ,{"categoryId":"05" ,"categoryName":"재즈"}
+     ,{"categoryId":"06" ,"categoryName":"기타"}
+    ]
+  }
+]

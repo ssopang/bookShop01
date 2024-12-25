@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.bookshop01.goods.dao.GoodsDAO;
+import com.bookshop01.goods.vo.GoodsSearchVO;
 import com.bookshop01.goods.vo.GoodsVO;
 import com.bookshop01.goods.vo.ImageFileVO;
 
@@ -18,7 +19,8 @@ import com.bookshop01.goods.vo.ImageFileVO;
 public class GoodsServiceImpl implements GoodsService{
 	@Autowired
 	private GoodsDAO goodsDAO;
-	
+
+    @Override
 	public Map<String,List<GoodsVO>> listGoods() throws Exception {
 		Map<String,List<GoodsVO>> goodsMap=new HashMap<String,List<GoodsVO>>();
 		List<GoodsVO> goodsList=goodsDAO.selectGoodsList("bestseller");
@@ -30,7 +32,8 @@ public class GoodsServiceImpl implements GoodsService{
 		goodsMap.put("steadyseller",goodsList);
 		return goodsMap;
 	}
-	
+
+    @Override
 	public Map goodsDetail(String _goods_id) throws Exception {
 		Map goodsMap=new HashMap();
 		GoodsVO goodsVO = goodsDAO.selectGoodsDetail(_goods_id);
@@ -39,16 +42,22 @@ public class GoodsServiceImpl implements GoodsService{
 		goodsMap.put("imageList", imageList);
 		return goodsMap;
 	}
-	
+
+    @Override
 	public List<String> keywordSearch(String keyword) throws Exception {
 		List<String> list=goodsDAO.selectKeywordSearch(keyword);
 		return list;
 	}
-	
+	@Override
 	public List<GoodsVO> searchGoods(String searchWord) throws Exception{
 		List goodsList=goodsDAO.selectGoodsBySearchWord(searchWord);
 		return goodsList;
 	}
+
+    @Override
+    public List<GoodsVO> searchGoodsList(GoodsSearchVO goodsSearchVO) throws Exception{
+        return goodsDAO.searchGoodsList(goodsSearchVO);
+    }
 	
 	
 }

@@ -1,508 +1,530 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-	pageEncoding="euc-kr"
-	isELIgnored="false" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/views/common/taglib_import.jsp" %>
 <c:set var="goods"  value="${goodsMap.goods}"  />
 <c:set var="imageFileList"  value="${goodsMap.imageFileList}"  />
-
-<c:choose>
-<c:when test='${not empty goods.goods_status}'>
-<script>
-window.onload=function()
-{
-	init();
-}
-
-function init(){
-	var frm_mod_goods=document.frm_mod_goods;
-	var h_goods_status=frm_mod_goods.h_goods_status;
-	var goods_status=h_goods_status.value;
-	var select_goods_status=frm_mod_goods.goods_status;
-	 select_goods_status.value=goods_status;
-}
-</script>
-</c:when>
-</c:choose>
-<script type="text/javascript">
-function fn_modify_goods(goods_id, attribute){
-	var frm_mod_goods=document.frm_mod_goods;
-	var value="";
-	if(attribute=='goods_sort'){
-		value=frm_mod_goods.goods_sort.value;
-	}else if(attribute=='goods_title'){
-		value=frm_mod_goods.goods_title.value;
-	}else if(attribute=='goods_writer'){
-		value=frm_mod_goods.goods_writer.value;   
-	}else if(attribute=='goods_publisher'){
-		value=frm_mod_goods.goods_publisher.value;
-	}else if(attribute=='goods_price'){
-		value=frm_mod_goods.goods_price.value;
-	}else if(attribute=='goods_sales_price'){
-		value=frm_mod_goods.goods_sales_price.value;
-	}else if(attribute=='goods_point'){
-		value=frm_mod_goods.goods_point.value;
-	}else if(attribute=='goods_published_date'){
-		value=frm_mod_goods.goods_published_date.value;
-	}else if(attribute=='goods_page_total'){
-		value=frm_mod_goods.goods_page_total.value;
-	}else if(attribute=='goods_isbn'){
-		value=frm_mod_goods.goods_isbn.value;
-	}else if(attribute=='goods_delivery_price'){
-		value=frm_mod_goods.goods_delivery_price.value;
-	}else if(attribute=='goods_delivery_date'){
-		value=frm_mod_goods.goods_delivery_date.value;
-	}else if(attribute=='goods_status'){
-		value=frm_mod_goods.goods_status.value;
-	}else if(attribute=='goods_contents_order'){
-		value=frm_mod_goods.goods_contents_order.value;
-	}else if(attribute=='goods_writer_intro'){
-		value=frm_mod_goods.goods_writer_intro.value;
-	}else if(attribute=='goods_intro'){
-		value=frm_mod_goods.goods_intro.value;
-	}else if(attribute=='publisher_comment'){
-		value=frm_mod_goods.publisher_comment.value;
-	}else if(attribute=='recommendation'){
-		value=frm_mod_goods.recommendation.value;
-	}
-
-	$.ajax({
-		type : "post",
-		async : false, //false¿Œ ∞ÊøÏ µø±‚Ωƒ¿∏∑Œ √≥∏Æ«—¥Ÿ.
-		url : "${contextPath}/admin/goods/modifyGoodsInfo.do",
-		data : {
-			goods_id:goods_id,
-			attribute:attribute,
-			value:value
-		},
-		success : function(data, textStatus) {
-			if(data.trim()=='mod_success'){
-				alert("ªÛ«∞ ¡§∫∏∏¶ ºˆ¡§«ﬂΩ¿¥œ¥Ÿ.");
-			}else if(data.trim()=='failed'){
-				alert("¥ŸΩ√ Ω√µµ«ÿ ¡÷ººø‰.");	
-			}
-			
-		},
-		error : function(data, textStatus) {
-			alert("ø°∑Ø∞° πﬂª˝«ﬂΩ¿¥œ¥Ÿ."+data);
-		},
-		complete : function(data, textStatus) {
-			//alert("¿€æ˜¿ªøœ∑· «ﬂΩ¿¥œ¥Ÿ");
-			
-		}
-	}); //end ajax	
-}
-
-
-
-  function readURL(input,preview) {
-	//  alert(preview);
-    if (input.files && input.files[0]) {
-        var reader = new FileReader();
-        reader.onload = function (e) {
-            $('#'+preview).attr('src', e.target.result);
-        }
-        reader.readAsDataURL(input.files[0]);
-    }
-  }  
-
-  var cnt =1;
-  function fn_addFile(){
-	  $("#d_file").append("<br>"+"<input  type='file' name='detail_image"+cnt+"' id='detail_image"+cnt+"'  onchange=readURL(this,'previewImage"+cnt+"') />");
-	  $("#d_file").append("<img  id='previewImage"+cnt+"'   width=200 height=200  />");
-	  $("#d_file").append("<input  type='button' value='√ﬂ∞°'  onClick=addNewImageFile('detail_image"+cnt+"','${imageFileList[0].goods_id}','detail_image')  />");
-	  cnt++;
-  }
-  
-  function modifyImageFile(fileId,goods_id, image_id,fileType){
-    // alert(fileId);
-	  var form = $('#FILE_FORM')[0];
-      var formData = new FormData(form);
-      formData.append("fileName", $('#'+fileId)[0].files[0]);
-      formData.append("goods_id", goods_id);
-      formData.append("image_id", image_id);
-      formData.append("fileType", fileType);
-      
-      $.ajax({
-        url: '${contextPath}/admin/goods/modifyGoodsImageInfo.do',
-        processData: false,
-        contentType: false,
-        data: formData,
-        type: 'POST',
-	      success: function(result){
-	         alert("¿ÃπÃ¡ˆ∏¶ ºˆ¡§«ﬂΩ¿¥œ¥Ÿ!");
-	       }
-      });
-  }
-  
-  function addNewImageFile(fileId,goods_id, fileType){
-	   //  alert(fileId);
-		  var form = $('#FILE_FORM')[0];
-	      var formData = new FormData(form);
-	      formData.append("uploadFile", $('#'+fileId)[0].files[0]);
-	      formData.append("goods_id", goods_id);
-	      formData.append("fileType", fileType);
-	      
-	      $.ajax({
-	          url: '${contextPath}/admin/goods/addNewGoodsImage.do',
-	                  processData: false,
-	                  contentType: false,
-	                  data: formData,
-	                  type: 'post',
-	                  success: function(result){
-	                      alert("¿ÃπÃ¡ˆ∏¶ ºˆ¡§«ﬂΩ¿¥œ¥Ÿ!");
-	                  }
-	          });
-	  }
-  
-  function deleteImageFile(goods_id,image_id,imageFileName,trId){
-	var tr = document.getElementById(trId);
-
-      	$.ajax({
-    		type : "post",
-    		async : true, //false¿Œ ∞ÊøÏ µø±‚Ωƒ¿∏∑Œ √≥∏Æ«—¥Ÿ.
-    		url : "${contextPath}/admin/goods/removeGoodsImage.do",
-    		data: {goods_id:goods_id,
-     	         image_id:image_id,
-     	         imageFileName:imageFileName},
-    		success : function(data, textStatus) {
-    			alert("¿ÃπÃ¡ˆ∏¶ ªË¡¶«ﬂΩ¿¥œ¥Ÿ!!");
-                tr.style.display = 'none';
-    		},
-    		error : function(data, textStatus) {
-    			alert("ø°∑Ø∞° πﬂª˝«ﬂΩ¿¥œ¥Ÿ."+textStatus);
-    		},
-    		complete : function(data, textStatus) {
-    			//alert("¿€æ˜¿ªøœ∑· «ﬂΩ¿¥œ¥Ÿ");
-    			
-    		}
-    	}); //end ajax	
-  }
-</script>
-
-</HEAD>
-<BODY>
-<form  name="frm_mod_goods"  method=post >
-<DIV class="clear"></DIV>
-	<!-- ≥ªøÎ µÈæÓ ∞°¥¬ ∞˜ -->
-	<DIV id="container">
-		<UL class="tabs">
-			<li><A href="#tab1">ªÛ«∞¡§∫∏</A></li>
-			<li><A href="#tab2">ªÛ«∞∏Ò¬˜</A></li>
-			<li><A href="#tab3">ªÛ«∞¿˙¿⁄º“∞≥</A></li>
-			<li><A href="#tab4">ªÛ«∞º“∞≥</A></li>
-			<li><A href="#tab5">√‚∆«ªÁ ªÛ«∞ ∆Ú∞°</A></li>
-			<li><A href="#tab6">√ﬂ√µªÁ</A></li>
-			<li><A href="#tab7">ªÛ«∞¿ÃπÃ¡ˆ</A></li>
-		</UL>
-		<DIV class="tab_container">
-			<DIV class="tab_content" id="tab1">
-				<table >
-			<tr >
-				<td width=200 >ªÛ«∞∫–∑˘</td>
-				<td width=500>
-				  <select name="goods_sort">
-					<c:choose>
-				      <c:when test="${goods.goods_sort=='ƒƒ«ª≈ÕøÕ ¿Œ≈Õ≥›' }">
-						<option value="ƒƒ«ª≈ÕøÕ ¿Œ≈Õ≥›" selected>ƒƒ«ª≈ÕøÕ ¿Œ≈Õ≥› </option>
-				  	    <option value="µ¡ˆ≈– ±‚±‚">µ¡ˆ≈– ±‚±‚  </option>
-				  	  </c:when>
-				  	  <c:when test="${goods.goods_sort=='µ¡ˆ≈– ±‚±‚' }">
-						<option value="ƒƒ«ª≈ÕøÕ ¿Œ≈Õ≥›" >ƒƒ«ª≈ÕøÕ ¿Œ≈Õ≥› </option>
-				  	    <option value="µ¡ˆ≈– ±‚±‚" selected>µ¡ˆ≈– ±‚±‚  </option>
-				  	  </c:when>
-				  	</c:choose>
-					</select>
-				</td>
-				<td >
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_sort')"/>
-				</td>
-			</tr>
-			<tr >
-				<td >ªÛ«∞¿Ã∏ß</td>
-				<td><input name="goods_title" type="text" size="40"  value="${goods.goods_title }"/></td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_title')"/>
-				</td>
-			</tr>
-			
-			<tr>
-				<td >¿˙¿⁄</td>
-				<td><input name="goods_writer" type="text" size="40" value="${goods.goods_writer }" /></td>
-								<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_writer')"/>
-				</td>
-				
-			</tr>
-			<tr>
-				<td >√‚∆«ªÁ</td>
-				<td><input name="goods_publisher" type="text" size="40" value="${goods.goods_publisher }" /></td>
-			     <td>
-				  <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_publisher')"/>
-				</td>
-				
-			</tr>
-			<tr>
-				<td >ªÛ«∞¡§∞°</td>
-				<td><input name="goods_price" type="text" size="40" value="${goods.goods_price }" /></td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_price')"/>
-				</td>
-				
-			</tr>
-			
-			<tr>
-				<td >ªÛ«∞∆«∏≈∞°∞›</td>
-				<td><input name="goods_sales_price" type="text" size="40" value="${goods.goods_sales_price }" /></td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_sales_price')"/>
-				</td>
-				
-			</tr>
-			
-			
-			<tr>
-				<td >ªÛ«∞ ±∏∏≈ ∆˜¿Œ∆Æ</td>
-				<td><input name="goods_point" type="text" size="40" value="${goods.goods_point }" /></td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_point')"/>
-				</td>
-
-			</tr>
-
-			<tr>
-				<td >ªÛ«∞√‚∆«¿œ</td>
-				<td>
-				  <input  name="goods_published_date"  type="date"  value="${goods.goods_published_date }" />
-				</td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_published_date')"/>
-				</td>
-
-			</tr>
-			
-			<tr>
-				<td >ªÛ«∞ √— ∆‰¿Ã¡ˆºˆ</td>
-				<td><input name="goods_total_page" type="text" size="40"  value="${goods.goods_total_page }"/></td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_total_page"/>
-				</td>
-
-			</tr>
-			
-			<tr>
-				<td >ISBN</td>
-				<td><input name="goods_isbn" type="text" size="40" value="${goods.goods_isbn }" /></td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_isbn')"/>
-				</td>
-
-			</tr>
-			<tr>
-				<td >ªÛ«∞ πËº€∫Ò</td>
-				<td><input name="goods_delivery_price" type="text" size="40"  value="${goods.goods_delivery_price }"/></td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_delivery_price')"/>
-				</td>
-
-			</tr>
-			<tr>
-				<td >ªÛ«∞ µµ¬¯ øπ¡§¿œ</td>
-				<td>
-				  <input name="goods_delivery_date" type="date"  value="${goods.goods_delivery_date }" />
-				  </td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_delivery_date')"/>
-				</td>
-
-			</tr>
-			
-			<tr>
-				<td >ªÛ«∞¡æ∑˘</td>
-				<td>
-				<select name="goods_status">
-				  <option value="bestseller"  >∫£Ω∫∆Æºø∑Ø</option>
-				  <option value="steadyseller" >Ω∫≈◊µºø∑Ø</option>
-				  <option value="newbook" >Ω≈∞£</option>
-				  <option value="on_sale" >∆«∏≈¡ﬂ</option>
-				  <option value="buy_out"  selected>«∞¿˝</option>
-				  <option value="out_of_print" >¿˝∆«</option>
-				</select>
-				<input  type="hidden" name="h_goods_status" value="${goods.goods_status }"/>
-				</td>
-				<td>
-				 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_status')"/>
-				</td>
-			</tr>
-			<tr>
-			 <td colspan=3>
-			   <br>
-			 </td>
-			</tr>
-				</table>	
-			</DIV>
-			<DIV class="tab_content" id="tab2">
-				<h4>√•∏Ò¬˜</h4>
-				<table>	
-				<tr>
-					<td >ªÛ«∞∏Ò¬˜</td>
-					<td><textarea  rows="100" cols="80" name="goods_contents_order">
-					  ${goods.goods_contents_order }
-					</textarea>
-					</td>
-					<td>
-					&nbsp;&nbsp;&nbsp;&nbsp;
-					 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_contents_order')"/>
-					</td>
-				</tr>
-				</table>	
-			</DIV>
-			<DIV class="tab_content" id="tab3">
-				<H4>ªÛ«∞ ¿˙¿⁄ º“∞≥</H4>
-				<P>
-				 <table>
-	  				 <tr>
-						<td >ªÛ«∞ ¿˙¿⁄ º“∞≥</td>
-						<td><textarea  rows="100" cols="80" name="goods_writer_intro">
-						  ${goods.goods_writer_intro }
-						</textarea>
-						</td>
-						<td>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_writer_intro')"/>
-						</td>
-				   </tr>
-			   </table>
-				</P>
-			</DIV>
-			<DIV class="tab_content" id="tab4">
-				<H4>ªÛ«∞º“∞≥</H4>
-				<P>
-				<table>
-					<tr>
-						<td>ªÛ«∞º“∞≥</td>
-						<td><textarea  rows="100" cols="80" name="goods_intro">
-						${goods.goods_intro }
-						</textarea>
-						</td>
-						<td>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_intro')"/>
-						</td>
-					</tr>
-			    </table>
-				</P>
-			</DIV>
-			<DIV class="tab_content" id="tab5">
-				<H4>√‚∆«ªÁ ªÛ«∞ ∆Ú∞°</H4>
-				<P>
-				<table>
-					<tr>
-						<td><textarea  rows="100" cols="80" name="goods_publisher_comment">
-						  ${goods.goods_publisher_comment }
-						</textarea>
-						</td>
-						<td>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_publisher_comment')"/>
-						</td>
-					</tr>
-			</table>
-				</P>
-			</DIV>
-			<DIV class="tab_content" id="tab6">
-				<H4>√ﬂ√µªÁ</H4>
-				 <table>
-					 <tr>
-						<td>√ﬂ√µªÁ</td>
-						<td><textarea  rows="100" cols="80" name="goods_recommendation">
-						  ${goods.goods_recommendation }
-						</textarea>
-						</td>
-						<td>
-						&nbsp;&nbsp;&nbsp;&nbsp;
-						 <input  type="button" value="ºˆ¡§π›øµ"  onClick="fn_modify_goods('${goods.goods_id }','goods_recommendation')"/>
-						</td>
-					</tr>
-			    </table>
-			</DIV>
-			<DIV class="tab_content" id="tab7">
-			   <form id="FILE_FORM" method="post" enctype="multipart/form-data"  >
-				<h4>ªÛ«∞¿ÃπÃ¡ˆ</h4>
-				 <table>
-					 <tr>
-					<c:forEach var="item" items="${imageFileList }"  varStatus="itemNum">
-			        <c:choose>
-			            <c:when test="${item.fileType=='main_image' }">
-			              <tr>
-						    <td>∏ﬁ¿Œ ¿ÃπÃ¡ˆ</td>
-						    <td>
-							  <input type="file"  id="main_image"  name="main_image"  onchange="readURL(this,'preview${itemNum.count}');" />
-						      <%-- <input type="text" id="image_id${itemNum.count }"  value="${item.fileName }" disabled  /> --%>
-							  <input type="hidden"  name="image_id" value="${item.image_id}"  />
-							<br>
-						</td>
-						<td>
-						  <img  id="preview${itemNum.count }"   width=200 height=200 src="${contextPath}/download.do?goods_id=${item.goods_id}&fileName=${item.fileName}" />
-						</td>
-						<td>
-						  &nbsp;&nbsp;&nbsp;&nbsp;
-						</td>
-						 <td>
-						 <input  type="button" value="ºˆ¡§"  onClick="modifyImageFile('main_image','${item.goods_id}','${item.image_id}','${item.fileType}')"/>
-						</td> 
-					</tr>
-					<tr>
-					 <td>
-					   <br>
-					 </td>
-					</tr>
-			         </c:when>
-			         <c:otherwise>
-			           <tr  id="${itemNum.count-1}">
-						<td>ªÛºº ¿ÃπÃ¡ˆ${itemNum.count-1 }</td>
-						<td>
-							<input type="file" name="detail_image"  id="detail_image"   onchange="readURL(this,'preview${itemNum.count}');" />
-							<%-- <input type="text" id="image_id${itemNum.count }"  value="${item.fileName }" disabled  /> --%>
-							<input type="hidden"  name="image_id" value="${item.image_id }"  />
-							<br>
-						</td>
-						<td>
-						  <img  id="preview${itemNum.count }"   width=200 height=200 src="${contextPath}/download.do?goods_id=${item.goods_id}&fileName=${item.fileName}">
-						</td>
-						<td>
-						  &nbsp;&nbsp;&nbsp;&nbsp;
-						</td>
-						 <td>
-						 <input  type="button" value="ºˆ¡§"  onClick="modifyImageFile('detail_image','${item.goods_id}','${item.image_id}','${item.fileType}')"/>
-						  <input  type="button" value="ªË¡¶"  onClick="deleteImageFile('${item.goods_id}','${item.image_id}','${item.fileName}','${itemNum.count-1}')"/>
-						</td> 
-					</tr>
-					<tr>
-					 <td>
-					   <br>
-					 </td>
-					</tr> 
-			         </c:otherwise>
-			       </c:choose>		
-			    </c:forEach>
-			    <tr align="center">
-			      <td colspan="3">
-				      <div id="d_file">
-						  <%-- <img  id="preview${itemNum.count }"   width=200 height=200 src="${contextPath}/download.do?goods_id=${item.goods_id}&fileName=${item.fileName}" /> --%>
-				      </div>
-			       </td>
-			    </tr>
-		   <tr>
-		     <td align=center colspan=2>
-		     
-		     <input   type="button" value="¿ÃπÃ¡ˆ∆ƒ¿œ√ﬂ∞°«œ±‚"  onClick="fn_addFile()"  />
-		   </td>
-		</tr> 
-	</table>
-	</form>
-	</DIV>
-	<DIV class="clear"></DIV>
-					
-</form>	
+<!DOCTYPE html>
+<html lang="ko">
+    <head>
+        <jsp:include page="${includeCommonPath}/head.jsp">
+            <jsp:param name="title" value="ÌÉÄÏù¥ÌãÄ Î™ÖÏπ≠" />
+        </jsp:include>
+        <c:choose>
+            <c:when test='${not empty goods.goods_status}'>
+                <script type="text/javascript">
+                    window.onload=function()
+                    {
+                        init();
+                    }
+                    
+                    function init(){
+                        var frm_mod_goods=document.frm_mod_goods;
+                        var h_goods_status=frm_mod_goods.h_goods_status;
+                        var goods_status=h_goods_status.value;
+                        var select_goods_status=frm_mod_goods.goods_status;
+                         select_goods_status.value=goods_status;
+                    }
+                </script>
+            </c:when>
+        </c:choose>
+        <script type="text/javascript">
+            function fn_modify_goods(goods_id, attribute){
+                var frm_mod_goods=document.frm_mod_goods;
+                var value="";
+                if(attribute=='goods_sort'){
+                    value=frm_mod_goods.goods_sort.value;
+                }else if(attribute=='goods_title'){
+                    value=frm_mod_goods.goods_title.value;
+                }else if(attribute=='goods_writer'){
+                    value=frm_mod_goods.goods_writer.value;   
+                }else if(attribute=='goods_publisher'){
+                    value=frm_mod_goods.goods_publisher.value;
+                }else if(attribute=='goods_price'){
+                    value=frm_mod_goods.goods_price.value;
+                }else if(attribute=='goods_sales_price'){
+                    value=frm_mod_goods.goods_sales_price.value;
+                }else if(attribute=='goods_point'){
+                    value=frm_mod_goods.goods_point.value;
+                }else if(attribute=='goods_published_date'){
+                    value=frm_mod_goods.goods_published_date.value;
+                }else if(attribute=='goods_page_total'){
+                    value=frm_mod_goods.goods_page_total.value;
+                }else if(attribute=='goods_isbn'){
+                    value=frm_mod_goods.goods_isbn.value;
+                }else if(attribute=='goods_delivery_price'){
+                    value=frm_mod_goods.goods_delivery_price.value;
+                }else if(attribute=='goods_delivery_date'){
+                    value=frm_mod_goods.goods_delivery_date.value;
+                }else if(attribute=='goods_status'){
+                    value=frm_mod_goods.goods_status.value;
+                }else if(attribute=='goods_contents_order'){
+                    value=frm_mod_goods.goods_contents_order.value;
+                }else if(attribute=='goods_writer_intro'){
+                    value=frm_mod_goods.goods_writer_intro.value;
+                }else if(attribute=='goods_intro'){
+                    value=frm_mod_goods.goods_intro.value;
+                }else if(attribute=='publisher_comment'){
+                    value=frm_mod_goods.publisher_comment.value;
+                }else if(attribute=='recommendation'){
+                    value=frm_mod_goods.recommendation.value;
+                }
+            
+                $.ajax({
+                    type : "post",
+                    async : false, //falseÏù∏ Í≤ΩÏö∞ ÎèôÍ∏∞ÏãùÏúºÎ°ú Ï≤òÎ¶¨ÌïúÎã§.
+                    url : "${contextPath}/admin/goods/modifyGoodsInfo.do",
+                    data : {
+                        goods_id:goods_id,
+                        attribute:attribute,
+                        value:value
+                    },
+                    success : function(data, textStatus) {
+                        if(data.trim()=='mod_success'){
+                            alert("ÏÉÅÌíà Ï†ïÎ≥¥Î•º ÏàòÏ†ïÌñàÏäµÎãàÎã§.");
+                        }else if(data.trim()=='failed'){
+                            alert("Îã§Ïãú ÏãúÎèÑÌï¥ Ï£ºÏÑ∏Ïöî.");    
+                        }
+                        
+                    },
+                    error : function(data, textStatus) {
+                        alert("ÏóêÎü¨Í∞Ä Î∞úÏÉùÌñàÏäµÎãàÎã§."+data);
+                    },
+                    complete : function(data, textStatus) {
+                        //alert("ÏûëÏóÖÏùÑÏôÑÎ£å ÌñàÏäµÎãàÎã§");
+                        
+                    }
+                }); //end ajax    
+            }
+            
+            
+            
+              function readURL(input,preview) {
+                //  alert(preview);
+                if (input.files && input.files[0]) {
+                    var reader = new FileReader();
+                    reader.onload = function (e) {
+                        $('#'+preview).attr('src', e.target.result);
+                    }
+                    reader.readAsDataURL(input.files[0]);
+                }
+              }  
+            
+              var cnt =1;
+              function fn_addFile(){
+                  $("#d_file").append("<br>"+"<input  type='file' name='detail_image"+cnt+"' id='detail_image"+cnt+"'  onchange=readURL(this,'previewImage"+cnt+"') />");
+                  $("#d_file").append("<img  id='previewImage"+cnt+"'   width=200 height=200  />");
+                  $("#d_file").append("<input  type='button' value='Ï∂îÍ∞Ä'  onClick=addNewImageFile('detail_image"+cnt+"','${imageFileList[0].goods_id}','detail_image')  />");
+                  cnt++;
+              }
+              
+              function modifyImageFile(fileId,goods_id, image_id,fileType){
+                // alert(fileId);
+                  var form = $('#FILE_FORM')[0];
+                  var formData = new FormData(form);
+                  formData.append("fileName", $('#'+fileId)[0].files[0]);
+                  formData.append("goods_id", goods_id);
+                  formData.append("image_id", image_id);
+                  formData.append("fileType", fileType);
+                  
+                  $.ajax({
+                    url: '${contextPath}/admin/goods/modifyGoodsImageInfo.do',
+                    processData: false,
+                    contentType: false,
+                    data: formData,
+                    type: 'POST',
+                      success: function(result){
+                         alert("Ïù¥ÎØ∏ÏßÄÎ•º ÏàòÏ†ïÌñàÏäµÎãàÎã§!");
+                       }
+                  });
+              }
+              
+              function addNewImageFile(fileId,goods_id, fileType){
+                   //  alert(fileId);
+                      var form = $('#FILE_FORM')[0];
+                      var formData = new FormData(form);
+                      formData.append("uploadFile", $('#'+fileId)[0].files[0]);
+                      formData.append("goods_id", goods_id);
+                      formData.append("fileType", fileType);
+                      
+                      $.ajax({
+                          url: '${contextPath}/admin/goods/addNewGoodsImage.do',
+                                  processData: false,
+                                  contentType: false,
+                                  data: formData,
+                                  type: 'post',
+                                  success: function(result){
+                                      alert("Ïù¥ÎØ∏ÏßÄÎ•º ÏàòÏ†ïÌñàÏäµÎãàÎã§!");
+                                  }
+                          });
+                  }
+              
+              function deleteImageFile(goods_id,image_id,imageFileName,trId){
+                var tr = document.getElementById(trId);
+            
+                      $.ajax({
+                        type : "post",
+                        async : true, //falseÏù∏ Í≤ΩÏö∞ ÎèôÍ∏∞ÏãùÏúºÎ°ú Ï≤òÎ¶¨ÌïúÎã§.
+                        url : "${contextPath}/admin/goods/removeGoodsImage.do",
+                        data: {goods_id:goods_id,
+                              image_id:image_id,
+                              imageFileName:imageFileName},
+                        success : function(data, textStatus) {
+                            alert("Ïù¥ÎØ∏ÏßÄÎ•º ÏÇ≠Ï†úÌñàÏäµÎãàÎã§!!");
+                            tr.style.display = 'none';
+                        },
+                        error : function(data, textStatus) {
+                            alert("ÏóêÎü¨Í∞Ä Î∞úÏÉùÌñàÏäµÎãàÎã§."+textStatus);
+                        },
+                        complete : function(data, textStatus) {
+                            //alert("ÏûëÏóÖÏùÑÏôÑÎ£å ÌñàÏäµÎãàÎã§");
+                            
+                        }
+                    }); //end ajax    
+              }
+        </script>
+    </head>
+    <body>
+        <div id="outer_wrap">
+            <div id="wrap">
+                <header>
+                    <jsp:include page="${includeCommonPath}/header.jsp" />
+                </header>
+                <div class="clear"></div>
+                <aside>
+                    <jsp:include page="${includeCommonPath}/side.jsp" />
+                </aside>
+                <article>
+                    <!-- ÌôîÎ©¥ ÎÇ¥Ïö© ÏãúÏûë(body start) -->
+                    <form name="frm_mod_goods" method="post">
+                    <div class="clear"></div>
+                        <!-- ÎÇ¥Ïö© Îì§Ïñ¥ Í∞ÄÎäî Í≥≥ -->
+                        <div id="container">
+                            <ul class="tabs">
+                                <li><a href="#tab1">ÏÉÅÌíàÏ†ïÎ≥¥</a></li>
+                                <li><a href="#tab2">ÏÉÅÌíàÎ™©Ï∞®</a></li>
+                                <li><a href="#tab3">ÏÉÅÌíàÏ†ÄÏûêÏÜåÍ∞ú</a></li>
+                                <li><a href="#tab4">ÏÉÅÌíàÏÜåÍ∞ú</a></li>
+                                <li><a href="#tab5">Ï∂úÌåêÏÇ¨ ÏÉÅÌíà ÌèâÍ∞Ä</a></li>
+                                <li><a href="#tab6">Ï∂îÏ≤úÏÇ¨</a></li>
+                                <li><a href="#tab7">ÏÉÅÌíàÏù¥ÎØ∏ÏßÄ</a></li>
+                            </ul>
+                            <div class="tab_container">
+                                <div class="tab_content" id="tab1">
+                                    <table >
+                                <tr >
+                                    <td width=200 >ÏÉÅÌíàÎ∂ÑÎ•ò</td>
+                                    <td width=500>
+                                      <select name="goods_sort">
+                                        <c:choose>
+                                          <c:when test="${goods.goods_sort=='Ïª¥Ìì®ÌÑ∞ÏôÄ Ïù∏ÌÑ∞ÎÑ∑' }">
+                                            <option value="Ïª¥Ìì®ÌÑ∞ÏôÄ Ïù∏ÌÑ∞ÎÑ∑" selected>Ïª¥Ìì®ÌÑ∞ÏôÄ Ïù∏ÌÑ∞ÎÑ∑ </option>
+                                              <option value="ÎîîÏßÄÌÑ∏ Í∏∞Í∏∞">ÎîîÏßÄÌÑ∏ Í∏∞Í∏∞  </option>
+                                            </c:when>
+                                            <c:when test="${goods.goods_sort=='ÎîîÏßÄÌÑ∏ Í∏∞Í∏∞' }">
+                                            <option value="Ïª¥Ìì®ÌÑ∞ÏôÄ Ïù∏ÌÑ∞ÎÑ∑" >Ïª¥Ìì®ÌÑ∞ÏôÄ Ïù∏ÌÑ∞ÎÑ∑ </option>
+                                              <option value="ÎîîÏßÄÌÑ∏ Í∏∞Í∏∞" selected>ÎîîÏßÄÌÑ∏ Í∏∞Í∏∞  </option>
+                                            </c:when>
+                                          </c:choose>
+                                        </select>
+                                    </td>
+                                    <td >
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_sort')"/>
+                                    </td>
+                                </tr>
+                                <tr >
+                                    <td >ÏÉÅÌíàÏù¥Î¶Ñ</td>
+                                    <td><input name="goods_title" type="text" size="40"  value="${goods.goods_title }"/></td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_title')"/>
+                                    </td>
+                                </tr>
+                                
+                                <tr>
+                                    <td >Ï†ÄÏûê</td>
+                                    <td><input name="goods_writer" type="text" size="40" value="${goods.goods_writer }" /></td>
+                                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_writer')"/>
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td >Ï∂úÌåêÏÇ¨</td>
+                                    <td><input name="goods_publisher" type="text" size="40" value="${goods.goods_publisher }" /></td>
+                                     <td>
+                                      <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_publisher')"/>
+                                    </td>
+                                    
+                                </tr>
+                                <tr>
+                                    <td >ÏÉÅÌíàÏ†ïÍ∞Ä</td>
+                                    <td><input name="goods_price" type="text" size="40" value="${goods.goods_price }" /></td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_price')"/>
+                                    </td>
+                                    
+                                </tr>
+                                
+                                <tr>
+                                    <td >ÏÉÅÌíàÌåêÎß§Í∞ÄÍ≤©</td>
+                                    <td><input name="goods_sales_price" type="text" size="40" value="${goods.goods_sales_price }" /></td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_sales_price')"/>
+                                    </td>
+                                    
+                                </tr>
+                                
+                                
+                                <tr>
+                                    <td >ÏÉÅÌíà Íµ¨Îß§ Ìè¨Ïù∏Ìä∏</td>
+                                    <td><input name="goods_point" type="text" size="40" value="${goods.goods_point }" /></td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_point')"/>
+                                    </td>
+                    
+                                </tr>
+                    
+                                <tr>
+                                    <td >ÏÉÅÌíàÏ∂úÌåêÏùº</td>
+                                    <td>
+                                      <input  name="goods_published_date"  type="date"  value="${goods.goods_published_date }" />
+                                    </td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_published_date')"/>
+                                    </td>
+                    
+                                </tr>
+                                
+                                <tr>
+                                    <td >ÏÉÅÌíà Ï¥ù ÌéòÏù¥ÏßÄÏàò</td>
+                                    <td><input name="goods_total_page" type="text" size="40"  value="${goods.goods_total_page }"/></td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_total_page"/>
+                                    </td>
+                    
+                                </tr>
+                                
+                                <tr>
+                                    <td >ISBN</td>
+                                    <td><input name="goods_isbn" type="text" size="40" value="${goods.goods_isbn }" /></td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_isbn')"/>
+                                    </td>
+                    
+                                </tr>
+                                <tr>
+                                    <td >ÏÉÅÌíà Î∞∞ÏÜ°ÎπÑ</td>
+                                    <td><input name="goods_delivery_price" type="text" size="40"  value="${goods.goods_delivery_price }"/></td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_delivery_price')"/>
+                                    </td>
+                    
+                                </tr>
+                                <tr>
+                                    <td >ÏÉÅÌíà ÎèÑÏ∞© ÏòàÏ†ïÏùº</td>
+                                    <td>
+                                      <input name="goods_delivery_date" type="date"  value="${goods.goods_delivery_date }" />
+                                      </td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_delivery_date')"/>
+                                    </td>
+                    
+                                </tr>
+                                
+                                <tr>
+                                    <td >ÏÉÅÌíàÏ¢ÖÎ•ò</td>
+                                    <td>
+                                    <select name="goods_status">
+                                      <option value="bestseller"  >Î≤†Ïä§Ìä∏ÏÖÄÎü¨</option>
+                                      <option value="steadyseller" >Ïä§ÌÖåÎîîÏÖÄÎü¨</option>
+                                      <option value="newbook" >Ïã†Í∞Ñ</option>
+                                      <option value="on_sale" >ÌåêÎß§Ï§ë</option>
+                                      <option value="buy_out"  selected>ÌíàÏ†à</option>
+                                      <option value="out_of_print" >Ï†àÌåê</option>
+                                    </select>
+                                    <input  type="hidden" name="h_goods_status" value="${goods.goods_status }"/>
+                                    </td>
+                                    <td>
+                                     <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_status')"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                 <td colspan=3>
+                                   <br>
+                                 </td>
+                                </tr>
+                                    </table>    
+                                </div>
+                                <div class="tab_content" id="tab2">
+                                    <h4>Ï±ÖÎ™©Ï∞®</h4>
+                                    <table>    
+                                    <tr>
+                                        <td >ÏÉÅÌíàÎ™©Ï∞®</td>
+                                        <td><textarea  rows="100" cols="80" name="goods_contents_order">
+                                          ${goods.goods_contents_order }
+                                        </textarea>
+                                        </td>
+                                        <td>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
+                                         <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_contents_order')"/>
+                                        </td>
+                                    </tr>
+                                    </table>    
+                                </div>
+                                <div class="tab_content" id="tab3">
+                                    <h4>ÏÉÅÌíà Ï†ÄÏûê ÏÜåÍ∞ú</h4>
+                                    <P>
+                                     <table>
+                                           <tr>
+                                            <td >ÏÉÅÌíà Ï†ÄÏûê ÏÜåÍ∞ú</td>
+                                            <td><textarea  rows="100" cols="80" name="goods_writer_intro">
+                                              ${goods.goods_writer_intro }
+                                            </textarea>
+                                            </td>
+                                            <td>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                             <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_writer_intro')"/>
+                                            </td>
+                                       </tr>
+                                   </table>
+                                    </P>
+                                </div>
+                                <div class="tab_content" id="tab4">
+                                    <h4>ÏÉÅÌíàÏÜåÍ∞ú</h4>
+                                    <P>
+                                    <table>
+                                        <tr>
+                                            <td>ÏÉÅÌíàÏÜåÍ∞ú</td>
+                                            <td><textarea  rows="100" cols="80" name="goods_intro">
+                                            ${goods.goods_intro }
+                                            </textarea>
+                                            </td>
+                                            <td>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                             <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_intro')"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                    </P>
+                                </div>
+                                <div class="tab_content" id="tab5">
+                                    <h4>Ï∂úÌåêÏÇ¨ ÏÉÅÌíà ÌèâÍ∞Ä</h4>
+                                    <P>
+                                    <table>
+                                        <tr>
+                                            <td><textarea  rows="100" cols="80" name="goods_publisher_comment">
+                                              ${goods.goods_publisher_comment }
+                                            </textarea>
+                                            </td>
+                                            <td>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                             <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_publisher_comment')"/>
+                                            </td>
+                                        </tr>
+                                </table>
+                                    </P>
+                                </div>
+                                <div class="tab_content" id="tab6">
+                                    <h4>Ï∂îÏ≤úÏÇ¨</h4>
+                                     <table>
+                                         <tr>
+                                            <td>Ï∂îÏ≤úÏÇ¨</td>
+                                            <td><textarea  rows="100" cols="80" name="goods_recommendation">
+                                              ${goods.goods_recommendation }
+                                            </textarea>
+                                            </td>
+                                            <td>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                             <input  type="button" value="ÏàòÏ†ïÎ∞òÏòÅ"  onClick="fn_modify_goods('${goods.goods_id }','goods_recommendation')"/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="tab_content" id="tab7">
+                                   <form id="FILE_FORM" method="post" enctype="multipart/form-data"  >
+                                    <h4>ÏÉÅÌíàÏù¥ÎØ∏ÏßÄ</h4>
+                                     <table>
+                                         <tr>
+                                        <c:forEach var="item" items="${imageFileList }"  varStatus="itemNum">
+                                        <c:choose>
+                                            <c:when test="${item.fileType=='main_image' }">
+                                              <tr>
+                                                <td>Î©îÏù∏ Ïù¥ÎØ∏ÏßÄ</td>
+                                                <td>
+                                                  <input type="file"  id="main_image"  name="main_image"  onchange="readURL(this,'preview${itemNum.count}');" />
+                                                  <%-- <input type="text" id="image_id${itemNum.count }"  value="${item.fileName }" disabled  /> --%>
+                                                  <input type="hidden"  name="image_id" value="${item.image_id}"  />
+                                                <br>
+                                            </td>
+                                            <td>
+                                              <img  id="preview${itemNum.count }"   width=200 height=200 src="${contextPath}/download.do?goods_id=${item.goods_id}&fileName=${item.fileName}" />
+                                            </td>
+                                            <td>
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+                                            </td>
+                                             <td>
+                                             <input  type="button" value="ÏàòÏ†ï"  onClick="modifyImageFile('main_image','${item.goods_id}','${item.image_id}','${item.fileType}')"/>
+                                            </td> 
+                                        </tr>
+                                        <tr>
+                                         <td>
+                                           <br>
+                                         </td>
+                                        </tr>
+                                         </c:when>
+                                         <c:otherwise>
+                                           <tr  id="${itemNum.count-1}">
+                                            <td>ÏÉÅÏÑ∏ Ïù¥ÎØ∏ÏßÄ${itemNum.count-1 }</td>
+                                            <td>
+                                                <input type="file" name="detail_image"  id="detail_image"   onchange="readURL(this,'preview${itemNum.count}');" />
+                                                <%-- <input type="text" id="image_id${itemNum.count }"  value="${item.fileName }" disabled  /> --%>
+                                                <input type="hidden"  name="image_id" value="${item.image_id }"  />
+                                                <br>
+                                            </td>
+                                            <td>
+                                              <img  id="preview${itemNum.count }"   width=200 height=200 src="${contextPath}/download.do?goods_id=${item.goods_id}&fileName=${item.fileName}">
+                                            </td>
+                                            <td>
+                                              &nbsp;&nbsp;&nbsp;&nbsp;
+                                            </td>
+                                             <td>
+                                             <input  type="button" value="ÏàòÏ†ï"  onClick="modifyImageFile('detail_image','${item.goods_id}','${item.image_id}','${item.fileType}')"/>
+                                              <input  type="button" value="ÏÇ≠Ï†ú"  onClick="deleteImageFile('${item.goods_id}','${item.image_id}','${item.fileName}','${itemNum.count-1}')"/>
+                                            </td> 
+                                        </tr>
+                                        <tr>
+                                         <td>
+                                           <br>
+                                         </td>
+                                        </tr> 
+                                         </c:otherwise>
+                                       </c:choose>        
+                                    </c:forEach>
+                                    <tr align="center">
+                                      <td colspan="3">
+                                          <div id="d_file">
+                                              <%-- <img  id="preview${itemNum.count }"   width=200 height=200 src="${contextPath}/download.do?goods_id=${item.goods_id}&fileName=${item.fileName}" /> --%>
+                                          </div>
+                                       </td>
+                                    </tr>
+                               <tr>
+                                 <td align=center colspan=2>
+                                 
+                                 <input   type="button" value="Ïù¥ÎØ∏ÏßÄÌååÏùºÏ∂îÍ∞ÄÌïòÍ∏∞"  onClick="fn_addFile()"  />
+                               </td>
+                            </tr> 
+                        </table>
+                        </form>
+                        </div>
+                        <div class="clear"></div>
+                                        
+                    </form>    
+                    <!-- ÌôîÎ©¥ ÎÇ¥Ïö© ÎÅù(body end) -->
+                </article>
+                <div class="clear"></div>
+                <footer>
+                    <jsp:include page="${includeCommonPath}/footer.jsp" />
+                </footer>
+            </div>
+            <jsp:include page="${includeCommonPath}/quickMenu.jsp" />
+        </div>
+    </body>
+</html>

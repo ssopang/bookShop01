@@ -1,17 +1,9 @@
-<%@ page language="java" contentType="text/html; charset=utf-8"
-    pageEncoding="utf-8"
-    isELIgnored="false"
-    %>
-<%@ taglib uri="http://tiles.apache.org/tags-tiles" prefix="tiles" %>    
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
-<%
-  request.setCharacterEncoding("utf-8");
-%>
-
-<head>
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/views/common/taglib_import.jsp" %>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 <link href="${contextPath}/resources/css/main.css" rel="stylesheet" type="text/css" media="screen">
 <link href="${contextPath}/resources/css/basic-jquery-slider.css" rel="stylesheet" type="text/css" media="screen">
 <link href="${contextPath}/resources/css/mobile.css" rel="stylesheet" type="text/css">
@@ -40,29 +32,4 @@
         });
     });
 </script>
-    <title><tiles:insertAttribute name="title" /></title>
-    
-</head>
-<body>
-    <div id="outer_wrap">
-        <div id="wrap">
-            <header>
-                   <tiles:insertAttribute name="header" />
-            </header>
-            <div class="clear"></div>
-            <aside>
-                 <tiles:insertAttribute name="side" />
-            </aside>
-            <article>
-                 <tiles:insertAttribute name="body" />
-            </article>
-            <div class="clear"></div>
-            <footer>
-                <tiles:insertAttribute name="footer" />
-            </footer>
-        </div>
-         <tiles:insertAttribute name="quickMenu" />
-    </div>            
-</body>      
-        
-        
+<title>${param.title}</title>
