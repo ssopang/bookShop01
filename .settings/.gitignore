@@ -1,3 +1,9 @@
+/classes/
+/test-classes/
+/target/
+/.classpath
+/.project
+/.springBeans
 /.jsdtscope
 /org.eclipse.jdt.core.prefs
 /org.eclipse.wst.common.component
