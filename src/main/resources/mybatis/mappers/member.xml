@@ -36,11 +36,12 @@
 	</resultMap>	
 
 	<select id="login" resultType="memberVO"  parameterType="java.util.Map"  >
+	
 	    <![CDATA[
 			select * from t_shopping_member 
 			 where member_id=#{member_id}
-			 and member_pw=#{member_pw}			
-			 
+			 and member_pw=#{member_pw}
+			 and del_yn='N'
 		]]>
 	</select>
 	
@@ -53,7 +54,7 @@
   <insert id="insertNewMember"  parameterType="memberVO">
   <![CDATA[
     	insert into t_shopping_member(member_id,
-				 					                  member_pw,
+				 					 member_pw,
                                      member_name,
                                      member_gender,
                                      member_birth_y,
@@ -100,4 +101,53 @@
                                       
    ]]>      
   </insert>
+  
+  <delete id="SignOutMember" parameterType="memberVO">
+	<![CDATA[
+		update t_shopping_member set del_yn = 'Y'
+        where member_id=#{member_id} and member_pw=#{member_pw}
+	]]>
+	</delete>
+	
+	<insert id="insertNewAddress" parameterType="java.util.Map">
+  	<![CDATA[
+  		insert into t_shopping_member_addresses (
+    		address_id, 
+    		member_id,
+    		address_name,
+    		zipcode,
+    		roadAddress,
+    		jibunAddress,
+    		namujiAddress
+  		) values ((select nvl(max(address_id), 0) + 1 
+     	from t_shopping_member_addresses 
+     	where member_id = #{member_id}), 
+    		#{member_id},                     
+    		#{address_name},       
+    		#{zipcode},             
+    		#{roadAddress},     
+    		#{jibunAddress},     
+    		#{namujiAddress} 
+  		)
+  	]]>
+	</insert>
+
+<select id="selectDefaultAddress" resultType="memberVO" parameterType="String">
+    <![CDATA[
+        select *
+        from t_shopping_member
+        where member_id = #{member_id}
+    ]]>
+</select>
+
+<select id="selectAddressList" resultType="hashmap" parameterType="String">
+    <![CDATA[
+        select address_name as addressName, 
+               road_address as roadAddress, 
+               jibun_address as jibunAddress, 
+               detail_address as detailAddress 
+        from t_shopping_member_address
+        where member_id = #{member_id}
+    ]]>
+</select>
 </mapper>

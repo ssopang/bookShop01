@@ -18,5 +18,9 @@ public interface MemberController {
 	public ResponseEntity  addMember(@ModelAttribute("member") MemberVO member,
             HttpServletRequest request, HttpServletResponse response) throws Exception;
 	public ResponseEntity   overlapped(@RequestParam("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception;
-
+	public ModelAndView removeMember(@ModelAttribute("member")MemberVO member,
+			HttpServletRequest request, HttpServletResponse response) throws Exception;
+	public ModelAndView addAddress(@RequestParam Map<String, String> addMap, HttpServletRequest request, HttpServletResponse response) throws Exception;
+    public ModelAndView getAddressList(HttpServletRequest request, HttpServletResponse response) throws Exception;
+	
 }

@@ -3,6 +3,9 @@
 	isELIgnored="false"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <c:set var="contextPath"  value="${pageContext.request.contextPath}"  />
+<%
+	request.setCharacterEncoding("utf-8");
+%>
 <!DOCTYPE html >
 <html>
 <head>
@@ -88,7 +91,7 @@ function fn_overlapped(){
           //alert("에러가 발생했습니다.");ㅣ
        },
        complete:function(data,textStatus){
-          //alert("작업을완료 했습니다");
+          alert("작업을완료 했습니다");
        }
     });  //end ajax	 
  }	

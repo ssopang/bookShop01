@@ -143,6 +143,11 @@
 	 	  set delivery_state='cancel_order'
 	   where order_id=#{order_id}
 	</update>
-		
-		
+	
+	<select id="selectMyNewAddress" resultType="memberVO" parameterType="String">
+		<![CDATA[
+			select * from t_shopping_member_addresses
+			where member_id=#{member_id}
+		]]>
+	</select>
 </mapper>

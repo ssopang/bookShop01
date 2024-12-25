@@ -1,6 +1,7 @@
 package com.bookshop01.member.dao;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.ibatis.session.SqlSession;
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository;
 import com.bookshop01.member.vo.MemberVO;
 
 @Repository("memberDAO")
-public class MemberDAOImpl  implements MemberDAO{
+public class MemberDAOImpl implements MemberDAO{
 	@Autowired
 	private SqlSession sqlSession;	
 	
@@ -31,5 +32,24 @@ public class MemberDAOImpl  implements MemberDAO{
 		return result;
 	}
 	
+	@Override
+	public int SignOutMember(MemberVO memberVO) throws DataAccessException {
+		int result = sqlSession.delete("mapper.member.SignOutMember", memberVO);
+		return result;
+	}
 	
+	@Override
+	public void insertNewAddress(Map<String, String> addMap) throws DataAccessException {
+		sqlSession.insert("mapper.member.insertNewAddress", addMap);
+	}
+	
+    @Override
+    public MemberVO selectDefaultAddress(String id) throws DataAccessException {
+        return sqlSession.selectOne("mapper.member.selectDefaultAddress", id);
+    }
+
+    @Override
+    public List<Map<String, String>> selectAdditionalAddresses(String id) throws DataAccessException {
+        return sqlSession.selectList("mapper.member.selectAddressList", id);
+    }
 }

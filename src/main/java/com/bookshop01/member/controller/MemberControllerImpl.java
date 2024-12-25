@@ -1,5 +1,6 @@
 package com.bookshop01.member.controller;
 
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -41,6 +42,7 @@ public class MemberControllerImpl extends BaseController implements MemberContro
 			session=request.getSession();
 			session.setAttribute("isLogOn", true);
 			session.setAttribute("memberInfo",memberVO);
+	        session.setAttribute("member_id", memberVO.getMember_id());
 			
 			String action=(String)session.getAttribute("action");
 			if(action!=null && action.equals("/order/orderEachGoods.do")){
@@ -83,13 +85,13 @@ public class MemberControllerImpl extends BaseController implements MemberContro
 		try {
 		    memberService.addMember(_memberVO);
 		    message  = "<script>";
-		    message +=" alert('가입에 성공하셨습니다.');";
+		    message +=" alert('ȸ�� ������ ���ƽ��ϴ�.�α���â���� �̵��մϴ�.');";
 		    message += " location.href='"+request.getContextPath()+"/member/loginForm.do';";
 		    message += " </script>";
 		    
 		}catch(Exception e) {
 			message  = "<script>";
-		    message +=" alert('가입에 실패하셨습니다.');";
+		    message +=" alert('�۾� �� ������ �߻��߽��ϴ�. �ٽ� �õ��� �ּ���');";
 		    message += " location.href='"+request.getContextPath()+"/member/memberForm.do';";
 		    message += " </script>";
 			e.printStackTrace();
@@ -103,7 +105,50 @@ public class MemberControllerImpl extends BaseController implements MemberContro
 	public ResponseEntity overlapped(@RequestParam("id") String id,HttpServletRequest request, HttpServletResponse response) throws Exception{
 		ResponseEntity resEntity = null;
 		String result = memberService.overlapped(id);
-		resEntity =new ResponseEntity(result, HttpStatus.OK);
+		resEntity = new ResponseEntity(result, HttpStatus.OK);
 		return resEntity;
 	}
+	
+	@Override
+	@RequestMapping(value="/removeMember.do", method = RequestMethod.POST)
+	public ModelAndView removeMember(@ModelAttribute("member") MemberVO member,
+										HttpServletRequest request, HttpServletResponse response) throws Exception {
+	    int result = memberService.removeMember(member); 	  
+	    HttpSession session=request.getSession();
+	    session.setAttribute("isLogOn", false);
+		session.removeAttribute("memberInfo");
+	    ModelAndView mav = new ModelAndView("redirect:/main/main.do");
+	    return mav;
+	}
+	
+	@Override
+	@RequestMapping(value="/addAddress.do", method = RequestMethod.POST)
+	public ModelAndView addAddress(@RequestParam Map<String, String> addMap,
+	                                HttpServletRequest request, HttpServletResponse response) throws Exception {
+		HttpSession session = request.getSession();
+		String member_id = (String) session.getAttribute("member_id");
+		addMap.put("member_id", member_id);
+	    memberService.addAddress(addMap);
+	    ModelAndView mav = new ModelAndView("redirect:/main/main.do");
+	    return mav;
+	}
+	
+    @Override
+    @RequestMapping(value="/myAddresses.do", method=RequestMethod.GET)
+    public ModelAndView getAddressList(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        // 세션에서 로그인한 사용자의 ID를 가져옴
+        HttpSession session = request.getSession();
+        String id = (String) session.getAttribute("member_id");
+
+        // 기본 주소 및 추가 주소 리스트 가져오기
+        MemberVO defaultAddress = memberService.getDefaultAddress(id);
+        List<Map<String, String>> additionalAddresses = memberService.getAdditionalAddresses(id);
+
+        // 뷰에 전달할 데이터 설정
+        ModelAndView mav = new ModelAndView("/member/myAddresses");
+        mav.addObject("defaultAddress", defaultAddress);
+        mav.addObject("additionalAddresses", additionalAddresses);
+        return mav;
+    }
+
 }

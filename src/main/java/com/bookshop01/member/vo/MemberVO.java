@@ -28,7 +28,14 @@ public class MemberVO {
 	private String namujiAddress;
 	private String joinDate;
 	private String del_yn;
-	
+	private String addressName;
+
+	public String getAddressName() {
+		return addressName;
+	}
+	public void setAddressName(String addressName) {
+		this.addressName = addressName;
+	}
 	public String getMember_id() {
 		return member_id;
 	}
